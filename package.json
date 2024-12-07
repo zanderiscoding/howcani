@@ -1,0 +1,31 @@
+{
+  "name": "howcani",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A CLI tool that provides AI help for terminal commands",
+  "main": "src/index.js",
+  "bin": {
+    "howcani": "./src/index.js"
+  },
+  "scripts": {
+    "howcani": "node --no-deprecation src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "cli",
+    "terminal",
+    "help",
+    "commands",
+    "natural-language"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "clipboardy": "^2.3.0",
+    "commander": "^11.1.0",
+    "conf": "^12.0.0",
+    "enquirer": "^2.4.1",
+    "openai": "^4.20.1"
+  }
+}
