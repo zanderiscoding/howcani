@@ -96,12 +96,29 @@ async function handleCommand(question, options) {
 
 program
     .name('howcani')
-    .description('AI help for terminal commands')
-    .version('1.0.0');
+    .description(chalk.cyan('AI-powered help for terminal commands'))
+    .version('1.0.0')
+    .addHelpText('before', `
+${chalk.bold('🤖 howcani')} - Get AI help for terminal commands
+
+${chalk.dim('Examples:')}
+  $ howcani find all files modified in the last 24 hours
+  $ howcani create a new branch and switch to it
+  $ howcani compress an entire directory
+  $ howcani find the process using port 3000
+`)
+    .addHelpText('after', `
+${chalk.dim('Quick Tips:')}
+  - Questions should be clear and specific
+  - Commands are OS-aware based on your set OS
+  - You can execute or get explanations for any command
+  - Use set-os to ensure commands match your system
+
+${chalk.dim('Need more help?')} Visit: ${chalk.blue('https://github.com/zanderiscoding/howcani')}
+`);
 
 program
     .argument('[question...]', 'Your question about what command to use')
-    .option('-e, --explain', 'Include explanation with the command')
     .action(async (args, options) => {
         if (args.length > 0) {
             await handleCommand(args.join(' '), options);
@@ -114,6 +131,10 @@ program
     .command('set-key')
     .description('Set your OpenAI API key')
     .argument('<key>', 'Your OpenAI API key')
+    .usage('<key>')
+    .addHelpText('after', `
+${chalk.dim('Example:')}
+  $ howcani set-key sk-...your-key-here...`)
     .action(async (key) => {
         try {
             setApiKey(key);
@@ -125,6 +146,10 @@ program
 program
     .command('unset-key')
     .description('Remove the saved OpenAI API key')
+    .addHelpText('after', `
+${chalk.dim('Use this to:')}
+  - Remove your API key for security
+  - Switch to a different API key`)
     .action(() => {
         clearApiKey();
         console.log(chalk.green('✓ API key removed!'));
@@ -133,8 +158,14 @@ program
 
 program
     .command('set-os')
-    .description('Set your operating system (e.g., windows, macos, linux)')
-    .argument('<os>', 'Your OS - can be any value, common examples: windows, macos, linux')
+    .description('Set your operating system for accurate commands')
+    .argument('<os>', 'Your OS (windows, macos, linux)')
+    .usage('<os>')
+    .addHelpText('after', `
+${chalk.dim('Examples:')}
+  $ howcani set-os windows
+  $ howcani set-os macos
+  $ howcani set-os linux`)
     .action((os) => {
         setOS(os.toLowerCase());
         console.log(chalk.green(`✓ OS set to: ${os.toLowerCase()}`));
