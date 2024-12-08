@@ -4,6 +4,10 @@
   "type": "module",
   "description": "A CLI tool that provides AI help for terminal commands",
   "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zanderiscoding/howcani"
+  },
   "bin": {
     "howcani": "./src/index.js"
   },
