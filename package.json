@@ -1,6 +1,6 @@
 {
   "name": "howcani",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "type": "module",
   "description": "A CLI tool that provides AI help for terminal commands",
   "main": "src/index.js",

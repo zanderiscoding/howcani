@@ -98,7 +98,7 @@ async function handleCommand(question, options) {
 program
     .name('howcani')
     .description(chalk.cyan('AI-powered help for terminal commands'))
-    .version('1.1.0')
+    .version('1.1.1')
     .addHelpText('before', `
 ${chalk.bold('🤖 howcani')} - Get AI help for terminal commands
 
@@ -212,13 +212,12 @@ ${chalk.dim('Examples:')}
             const savedModels = getSavedModels();
             const currentModel = getModel();
             
-            const choices = [
-                ...savedModels.map(m => ({
-                    name: m === currentModel ? `${m} ${chalk.green('(current)')}` : m,
-                    value: m
-                })),
-                { name: chalk.cyan('+ Add new model'), value: 'ADD_NEW' }
-            ];
+            console.log(chalk.dim('Tip: Run "howcani set-model <model-name>" to add a custom model\n'));
+            
+            const choices = savedModels.map(m => ({
+                name: m === currentModel ? `${m} ${chalk.green('(current)')}` : m,
+                value: m
+            }));
             
             const response = await enquirer.prompt({
                 type: 'select',
@@ -227,22 +226,7 @@ ${chalk.dim('Examples:')}
                 choices: choices
             });
             
-            if (response.selectedModel === 'ADD_NEW') {
-                const newModelResponse = await enquirer.prompt({
-                    type: 'input',
-                    name: 'newModel',
-                    message: 'Enter the new model name:',
-                    validate: (input) => {
-                        if (!input.trim()) {
-                            return 'Model name cannot be empty';
-                        }
-                        return true;
-                    }
-                });
-                setModel(newModelResponse.newModel.trim());
-            } else {
-                setModel(response.selectedModel);
-            }
+            setModel(response.selectedModel);
         }
     });
 
