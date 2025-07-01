@@ -26,11 +26,12 @@ howcani find the process using port 3000
 
 ## Features
 
-- 🤖 Uses OpenAI's gpt-4o model to understand your questions
+- 🤖 Uses OpenAI models to understand your questions (configurable model selection)
 - 💡 Generates precise, executable commands
 - 🌐 OS-aware command generation
 - 🎨 Beautiful terminal output
 - 🔑 Bring Your Own API Key - uses your OpenAI account
+- ⚙️ Configurable model selection (gpt-4o, gpt-4o-mini, gpt-3.5-turbo, or custom)
 
 ## Installation
 
@@ -82,6 +83,8 @@ howcani <question>           # Get a command for your question
 howcani set-key <key>        # Set your OpenAI API key
 howcani unset-key            # Remove your OpenAI API key
 howcani set-os <os>          # Set your OS for accurate commands
+howcani view-model           # View the currently configured OpenAI model
+howcani set-model [model]    # Set the OpenAI model to use
 howcani --help               # Show help message
 ```
 

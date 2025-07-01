@@ -4,7 +4,7 @@ import { Command } from 'commander';
 import chalk from 'chalk';
 import enquirer from 'enquirer';
 import clipboardy from 'clipboardy';
-import { setApiKey, getApiKey, clearApiKey, setOS, getOS } from './config.js';
+import { setApiKey, getApiKey, clearApiKey, setOS, getOS, setModel, getModel, getSavedModels } from './config.js';
 import OpenAI from 'openai';
 import { createPrompt, parseResponse, createExplanationPrompt } from './prompt.js';
 import { exec } from 'child_process';
@@ -33,10 +33,11 @@ async function handleCommand(question, options) {
 
         const openai = new OpenAI({ apiKey });
         const os = getOS();
+        const model = getModel();
         const prompt = createPrompt(question, os);
         
         const completion = await openai.chat.completions.create({
-            model: "gpt-4o",
+            model: model,
             messages: prompt
         });
 
@@ -78,7 +79,7 @@ async function handleCommand(question, options) {
             case 'Explain':
                 const explanationPrompt = createExplanationPrompt(result);
                 const explanationCompletion = await openai.chat.completions.create({
-                    model: "gpt-4o",
+                    model: model,
                     messages: explanationPrompt
                 });
                 console.log(chalk.gray('\nExplanation:'));
@@ -169,6 +170,80 @@ ${chalk.dim('Examples:')}
     .action((os) => {
         setOS(os.toLowerCase());
         console.log(chalk.green(`✓ OS set to: ${os.toLowerCase()}`));
+    });
+
+program
+    .command('view-model')
+    .description('View the currently configured OpenAI model')
+    .addHelpText('after', `
+${chalk.dim('Shows:')}
+  - Current model in use
+  - All saved models`)
+    .action(() => {
+        const currentModel = getModel();
+        const savedModels = getSavedModels();
+        
+        console.log(chalk.cyan('Current Model:'));
+        console.log(chalk.green(`  ${currentModel}`));
+        console.log(chalk.cyan('\nSaved Models:'));
+        savedModels.forEach(model => {
+            const indicator = model === currentModel ? chalk.green('→ ') : '  ';
+            console.log(`${indicator}${model}`);
+        });
+        process.exit(0);
+    });
+
+program
+    .command('set-model')
+    .description('Set the OpenAI model to use')
+    .argument('[model]', 'Model name (optional - if not provided, shows interactive selection)')
+    .usage('[model]')
+    .addHelpText('after', `
+${chalk.dim('Examples:')}
+  $ howcani set-model gpt-4o-mini
+  $ howcani set-model gpt-3.5-turbo
+  $ howcani set-model             # Interactive selection`)
+    .action(async (model) => {
+        if (model) {
+            // Direct model setting
+            setModel(model);
+        } else {
+            // Interactive model selection
+            const savedModels = getSavedModels();
+            const currentModel = getModel();
+            
+            const choices = [
+                ...savedModels.map(m => ({
+                    name: m === currentModel ? `${m} ${chalk.green('(current)')}` : m,
+                    value: m
+                })),
+                { name: chalk.cyan('+ Add new model'), value: 'ADD_NEW' }
+            ];
+            
+            const response = await enquirer.prompt({
+                type: 'select',
+                name: 'selectedModel',
+                message: 'Select an OpenAI model:',
+                choices: choices
+            });
+            
+            if (response.selectedModel === 'ADD_NEW') {
+                const newModelResponse = await enquirer.prompt({
+                    type: 'input',
+                    name: 'newModel',
+                    message: 'Enter the new model name:',
+                    validate: (input) => {
+                        if (!input.trim()) {
+                            return 'Model name cannot be empty';
+                        }
+                        return true;
+                    }
+                });
+                setModel(newModelResponse.newModel.trim());
+            } else {
+                setModel(response.selectedModel);
+            }
+        }
     });
 
 program.parse(); 
