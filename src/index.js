@@ -98,7 +98,7 @@ async function handleCommand(question, options) {
 program
     .name('howcani')
     .description(chalk.cyan('AI-powered help for terminal commands'))
-    .version('1.0.0')
+    .version('1.1.0')
     .addHelpText('before', `
 ${chalk.bold('🤖 howcani')} - Get AI help for terminal commands
 
