@@ -98,7 +98,7 @@ async function handleCommand(question, options) {
 program
     .name('howcani')
     .description(chalk.cyan('AI-powered help for terminal commands'))
-    .version('1.1.1')
+    .version('1.1.2')
     .addHelpText('before', `
 ${chalk.bold('🤖 howcani')} - Get AI help for terminal commands
 
@@ -215,7 +215,7 @@ ${chalk.dim('Examples:')}
             console.log(chalk.dim('Tip: Run "howcani set-model <model-name>" to add a custom model\n'));
             
             const choices = savedModels.map(m => ({
-                name: m === currentModel ? `${m} ${chalk.green('(current)')}` : m,
+                name: m === currentModel ? `→ ${m}` : `  ${m}`,
                 value: m
             }));
             
